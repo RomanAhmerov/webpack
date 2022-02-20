@@ -1,0 +1,36 @@
+{
+  "name": "my-webpack",
+  "version": "1.0.0",
+  "description": "webpack course",
+  "_comment": " 'main': 'index.js', - убираем данное свойство т.к нам не нужно публиковать | 'private': true, - защита от публикации пакеты  ",
+  "private": true,
+  "scripts": {
+    "dev": "npx webpack --mode=development",
+    "build": "npx webpack --mode=production",
+    "watch": "npx webpack --mode=development --watch",
+    "start": "npx webpack serve"
+  },
+  "keywords": [
+    "JavaScript",
+    "Webpack"
+  ],
+  "author": "Roman <axmerov331@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.6.0",
+    "csv-loader": "^3.0.3",
+    "file-loader": "^6.2.0",
+    "html-loader": "^3.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4",
+    "xml-loader": "^1.2.1"
+  },
+  "dependencies": {
+    "jquery": "^3.6.0",
+    "normalize.css": "^8.0.1"
+  }
+}

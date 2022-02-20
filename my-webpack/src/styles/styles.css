@@ -1,0 +1,31 @@
+/* Подключение доп. файла css */
+@import "roboto.css";
+
+/* Подключение css - библотеки (npm i normalize.css)   " ~ - обозначает искать в node_modules"*/
+@import "~normalize.css";
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.conteiner {
+  margin: 0 auto;
+  padding-top: 2rem;
+  min-width: 1000px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.logo {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  background-image: url('@/assets/webpack-logo.png');
+  background-size: cover;
+}
+
+.code {
+    color: red;
+}
