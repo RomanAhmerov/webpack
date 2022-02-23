@@ -2,12 +2,26 @@
 // Модуль по работе с путями
 const path = require("path");
 
-// --- Сторонние модули NodeJS ---
+// --- Сторонние модули NodeJS (Plugins) ---
 // Модуль для работы html-webpack
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 
 // Модуль для очистки dist - проекта
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+// Модуль для копирования статических файлов
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+// - Модуль для работы с CSS
+// Модуль для создания отдельного файла CSS
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// Модуль для минимизации файла CSS
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+
+// Переменные для работы
+// Системная переменная (вставляем при использовании npm run ... | cross-env NODE_ENV=development/production)
+const isDev = process.env.NODE_ENV === "development"; // - статус сборки (режим разработки)
+const isProd = process.env.NODE_ENV === "production"; // - статус сборки (режим продакшн)
 
 // --- Конфигурация Webpack ---
 // Экспортирование модулей NodeJS
@@ -50,19 +64,43 @@ module.exports = {
 
   // --- Оптимизация ---
   optimization: {
+    // webpack отделяет повторяющиеся пакеты и вытаскивает их новые chunk-и (vendors)
     splitChunks: {
       chunks: "all",
     },
+
+    minimizer: [
+      // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`)
+      `...`, 
+      new CssMinimizerPlugin(),
+    ],
   },
 
   // --- Плагины (подключение) ---
   plugins: [
+    // - Модуль для работы html-webpack
     new HTMLWebpackPlugin({
       // Первоначальный HTML - файл (шаблон)
       template: "./index.html",
     }),
 
+    // - Модуль для очистки dist - проекта
     new CleanWebpackPlugin(),
+
+    // - Модуль для сжатия CSS
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash].css",
+    }),
+
+    // - Модуль для копирования статических файлов (сейчас html-webpack сам копирует статические файлы используемые в html)
+    // new CopyWebpackPlugin({
+    //   patterns: [
+    //     {
+    //       from: path.resolve(__dirname, "src/favicon.ico"),
+    //       to: path.resolve(__dirname, "dist"),
+    //     },
+    //   ],
+    // }),
   ],
 
   // --- (Модули) Лоадеры (нужны для работы с различными файлами кроме JS и JSON) работа с <styles> ---
@@ -73,7 +111,17 @@ module.exports = {
         // Если есть определенное расширение (регулярное выражение)
         test: /\.css$/i,
         // То использовать эти лоудеры (порядок <-- справа - налево) "лоудеры нужно установить"
-        use: ["style-loader", "css-loader"], // - в новой версии (текущей) они могут обрабатывать картинки (url(./...)) и шрифты
+        // css-loader - обрабатывает CSS
+        // style-loader - вставляет стили в HTML
+        // use: ["style-loader", "css-loader"], // - в новой версии (текущей) они могут обрабатывать картинки (url(./...)) и шрифты
+
+        // MiniCssExtractPlugin.loader - выносит CSS в отдельные файлы
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          "css-loader",
+        ], // - в новой версии (текущей) они могут обрабатывать картинки (url(./...)) и шрифты
       },
 
       // Загрузка html - файлов (в данном случае он парсит наши html - файлы и тегах <img src="../" - парсит изображения в src)
@@ -100,10 +148,11 @@ module.exports = {
     ],
   },
 
-  // --- DevServer (пакет NPM: npm i -D webpack-dev-server) ---
+  // --- DevServer (пакет NPM: npm i -D webpack-dev-server  'запуск: npm run start (npx webpack serve)') ---
   devServer: {
     port: 3001,
-    watchFiles: ['./src/**/*'],
+    watchFiles: ["./src/**/*"],
+    hot: isDev,
     liveReload: true,
-  }
+  },
 };

@@ -1,5 +1,5 @@
 // - Не нативный испорт с использованием доп. пакетов
-// Импорт CSS (пакеты: "style-loader", "css-loader")
+// Импорт CSS (пакеты: "style-loader" / MiniCssExtractPlugin.loader  , "css-loader")
 import "@/styles/styles.css";
 
 // Импорт файлов
